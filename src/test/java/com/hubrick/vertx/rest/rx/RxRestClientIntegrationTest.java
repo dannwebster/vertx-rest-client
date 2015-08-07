@@ -25,9 +25,11 @@ import com.hubrick.vertx.rest.converter.JacksonJsonHttpMessageConverter;
 import com.hubrick.vertx.rest.converter.StringHttpMessageConverter;
 import com.hubrick.vertx.rest.impl.DefaultRestClient;
 import com.hubrick.vertx.rest.rx.impl.DefaultRxRestClient;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import org.junit.Test;
 import org.mockserver.model.Header;
-import org.vertx.testtools.VertxAssert;
 import rx.Observable;
 
 import java.util.LinkedList;
@@ -83,19 +85,23 @@ public class RxRestClientIntegrationTest extends AbstractFunctionalTest {
         );
 
 
-        final RestClient restClient = new DefaultRestClient(
-                vertx,
-                ImmutableList.of(
-                        new FormHttpMessageConverter(),
-                        new StringHttpMessageConverter(),
-                        new JacksonJsonHttpMessageConverter(new ObjectMapper())
-                )
-        );
+        HttpClientOptions opts = new HttpClientOptions();
+        opts.setDefaultHost("localhost");
+        opts.setDefaultPort(8089);
+        opts.setMaxPoolSize(10);
 
-        restClient
-                .setHost("localhost")
-                .setPort(8089)
-                .setMaxPoolSize(10);
+        HttpClient client = Vertx.vertx().createHttpClient(opts);
+
+        final RestClient restClient = new DefaultRestClient(
+            client,
+            ImmutableList.of(
+                    new FormHttpMessageConverter(),
+                    new StringHttpMessageConverter(),
+                    new JacksonJsonHttpMessageConverter(new ObjectMapper())
+            ),
+            (throwable) -> {},
+            30
+        );
 
         final RxRestClient rxRestClient = new DefaultRxRestClient(restClient);
         final Observable<RestClientResponse<UserSearchResponse[]>> response =  rxRestClient.get("/api/v1/users/search", UserSearchResponse[].class, restClientRequest -> restClientRequest.end());
@@ -107,7 +113,7 @@ public class RxRestClientIntegrationTest extends AbstractFunctionalTest {
             }
 
             return Observable.merge(responses);
-        }).finallyDo(() -> VertxAssert.testComplete())
+        }).finallyDo(() -> {})
                 .forEach(userResponseRestClientResponse -> assertThat(userResponseRestClientResponse.getBody().getId(), anyOf(is("b9d8fb1a-38c5-45ea-a7ee-6450a964f4f8"), is("e5297618-c299-4157-a85c-4957c8204819"))));
 
     }

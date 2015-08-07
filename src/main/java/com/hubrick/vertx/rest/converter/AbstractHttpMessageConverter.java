@@ -18,13 +18,13 @@ package com.hubrick.vertx.rest.converter;
 import com.google.common.base.Charsets;
 import com.hubrick.vertx.rest.MediaType;
 import com.hubrick.vertx.rest.exception.HttpMessageConverterException;
+import io.vertx.core.MultiMap;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpClientRequest;
+import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpClientRequest;
-import org.vertx.java.core.http.HttpClientResponse;
-import org.vertx.java.core.http.HttpHeaders;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,12 +85,12 @@ public abstract class AbstractHttpMessageConverter<T> implements HttpMessageConv
                 if(log.isDebugEnabled()) {
                     log.debug("Request body: {}", new String(buffer, Charsets.UTF_8));
                 }
-                httpClientRequest.end(new Buffer(buffer));
+                httpClientRequest.end(Buffer.buffer(buffer));
             } else {
                 if(log.isDebugEnabled()) {
                     log.debug("Partial request body: {}", new String(buffer, Charsets.UTF_8));
                 }
-                httpClientRequest.write(new Buffer(buffer));
+                httpClientRequest.write(Buffer.buffer(buffer));
             }
         } catch (HttpMessageConverterException e) {
             throw e;

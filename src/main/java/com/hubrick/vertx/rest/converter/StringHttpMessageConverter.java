@@ -19,8 +19,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.hubrick.vertx.rest.MediaType;
 import com.hubrick.vertx.rest.exception.HttpMessageConverterException;
-import org.vertx.java.core.MultiMap;
-import org.vertx.java.core.http.HttpHeaders;
+import io.vertx.core.MultiMap;
+import io.vertx.core.http.HttpHeaders;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;

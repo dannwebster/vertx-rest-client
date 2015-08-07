@@ -16,7 +16,6 @@
 package com.hubrick.vertx.rest;
 
 import org.mockserver.client.server.MockServerClient;
-import org.vertx.testtools.TestVerticle;
 
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 
@@ -24,7 +23,7 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
  * @author Emir Dizdarevic
  * @since 1.1.0
  */
-public abstract class AbstractFunctionalTest extends TestVerticle {
+public abstract class AbstractFunctionalTest {
 
     private static MockServerClient mockServerClient = startClientAndServer(8089);
 

@@ -23,12 +23,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.hubrick.vertx.rest.MediaType;
 import com.hubrick.vertx.rest.exception.HttpMessageConverterException;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpClientRequest;
+import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.HttpClientRequest;
-import org.vertx.java.core.http.HttpClientResponse;
-import org.vertx.java.core.http.HttpHeaders;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -156,10 +156,10 @@ public class FormHttpMessageConverter implements HttpMessageConverter<Multimap<S
 
         if(endRequest) {
             log.debug("Request body: {}", payload);
-            httpClientRequest.end(new Buffer(bytes));
+            httpClientRequest.end(Buffer.buffer(bytes));
         } else {
             log.debug("Partial request body: {}", payload);
-            httpClientRequest.write(new Buffer(bytes));
+            httpClientRequest.write(Buffer.buffer(bytes));
         }
     }
 }
